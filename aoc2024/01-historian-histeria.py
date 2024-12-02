@@ -1,5 +1,3 @@
-from pathlib import Path
-
 sample_input = """
 3   4
 4   3
@@ -10,11 +8,6 @@ sample_input = """
 """
 
 sample_result = (11, 31)
-
-def solve(string_input):
-    processed_input = process_input(string_input)
-    result = compute_result(processed_input)
-    return result
 
 def process_input(input_string):
     numbers = [int(n) for n in input_string.split()]
@@ -36,8 +29,3 @@ def compute_similarity(left_list, right_list):
     similarities = [i*right_list.count(i) for i in left_list]
     total_similarity = sum(similarities)
     return total_similarity
-
-if __name__ == "__main__":
-    string_input = Path("01-historian-histeria.txt").read_text()
-    result = solve(string_input)
-    print(result)
