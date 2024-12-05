@@ -34,39 +34,35 @@ sample_input = """
 
 sample_result = (143, 123)
 
-def process_input(input_string):
+def solve(input_string):
     rules, _, updates = input_string.partition("\n\n")
     rules = [[int(page) for page in rule.split("|")] for rule in rules.split()]
     updates = [[int(page) for page in update.split(",")] for update in updates.split()]
-    return rules, updates
-
-def compute_result(data):
-    correct_updates_result = compute_correct_updates(*data)
-    incorrect_updates_result = compute_incorrect_updates(*data)
+    rulemap = compute_rulemap(rules)
+    correct_updates_result = compute_correct_updates(rulemap, updates)
+    incorrect_updates_result = compute_incorrect_updates(rulemap, updates)
     return correct_updates_result, incorrect_updates_result
-
-def compute_correct_updates(rules, updates):
-    result = 0
-    rulemap = compute_rulemap(rules)
-    for update in updates:
-        if is_update_correct(rulemap, update):
-            result += update[len(update)//2]
-    return result
-
-def compute_incorrect_updates(rules, updates):
-    result = 0
-    rulemap = compute_rulemap(rules)
-    for update in updates:
-        if not is_update_correct(rulemap, update):
-            update = sorted(update, key=cmp_to_key(lambda x, y: -1 if y in rulemap[x] else 1))
-            result += update[len(update)//2]
-    return result
 
 def compute_rulemap(rules):
     rulemap = defaultdict(list)
     for rule in rules:
         rulemap[rule[0]].append(rule[1])
     return rulemap
+
+def compute_correct_updates(rulemap, updates):
+    result = 0
+    for update in updates:
+        if is_update_correct(rulemap, update):
+            result += update[len(update)//2]
+    return result
+
+def compute_incorrect_updates(rulemap, updates):
+    result = 0
+    for update in updates:
+        if not is_update_correct(rulemap, update):
+            update = sorted(update, key=cmp_to_key(lambda x, y: -1 if y in rulemap[x] else 1))
+            result += update[len(update)//2]
+    return result
 
 def is_update_correct(rulemap, update):
     for i, target in enumerate(update[:-1]):

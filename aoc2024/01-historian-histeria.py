@@ -9,11 +9,8 @@ sample_input = """
 
 sample_result = (11, 31)
 
-def process_input(input_string):
+def solve(input_string):
     numbers = [int(n) for n in input_string.split()]
-    return numbers
-
-def compute_result(numbers):
     left_list = sorted(numbers[::2])
     right_list = sorted(numbers[1::2])
     distance = compute_distance(left_list, right_list)

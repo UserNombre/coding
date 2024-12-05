@@ -9,11 +9,8 @@ sample_input = """
 
 sample_result = (2, 4)
 
-def process_input(input_string):
+def solve(input_string):
     reports = list(map(lambda s: list(map(int, s.split())), input_string.strip().split("\n")))
-    return reports
-
-def compute_result(reports):
     safe_reports_v1 = compute_safe_reports_v1(reports)
     safe_reports_v2 = compute_safe_reports_v2(reports)
     return safe_reports_v1, safe_reports_v2
