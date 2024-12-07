@@ -50,18 +50,14 @@ def compute_rulemap(rules):
     return rulemap
 
 def compute_correct_updates(rulemap, updates):
-    result = 0
-    for update in updates:
-        if is_update_correct(rulemap, update):
-            result += update[len(update)//2]
+    correct_updates = filter(lambda u: is_update_correct(rulemap, u), updates)
+    result = sum([update[len(update)//2] for update in correct_updates])
     return result
 
 def compute_incorrect_updates(rulemap, updates):
-    result = 0
-    for update in updates:
-        if not is_update_correct(rulemap, update):
-            update = sorted(update, key=cmp_to_key(lambda x, y: -1 if y in rulemap[x] else 1))
-            result += update[len(update)//2]
+    incorrect_updates = filter(lambda u: not is_update_correct(rulemap, u), updates)
+    key = cmp_to_key(lambda x, y: -1 if y in rulemap[x] else 1)
+    result = sum([sorted(update, key=key)[len(update)//2] for update in incorrect_updates])
     return result
 
 def is_update_correct(rulemap, update):

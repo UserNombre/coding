@@ -10,7 +10,7 @@ sample_input = """
 sample_result = (2, 4)
 
 def solve(input_string):
-    reports = list(map(lambda s: list(map(int, s.split())), input_string.strip().split("\n")))
+    reports = [[int(n) for n in line.split()] for line in input_string.strip().split("\n")]
     safe_reports_v1 = compute_safe_reports_v1(reports)
     safe_reports_v2 = compute_safe_reports_v2(reports)
     return safe_reports_v1, safe_reports_v2
@@ -41,5 +41,5 @@ def compute_safe_reports_v2(reports):
 def compute_safety_score(report):
     differences = map(lambda x, y: x - y, report[:-1], report[1:])
     safe_differences = filter(lambda x: 0 < abs(x) <= 3, differences)
-    safety_score = abs(sum(map(lambda x: min(1, max(-1, x)), safe_differences)))
+    safety_score = abs(sum([min(1, max(-1, x)) for x in safe_differences]))
     return safety_score

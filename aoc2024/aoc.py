@@ -62,3 +62,5 @@ if __name__ == "__main__":
         print(f"Usage error: {e}")
     except Exception as e:
         print(traceback.format_exc())
+    finally:
+        sys.stdout.write("\033[?25h")
