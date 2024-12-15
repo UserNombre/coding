@@ -41,7 +41,7 @@ def solve(input_string):
     for p_x, p_y, v_x, v_y in batched(numbers, 4):
         positions.append((p_y, p_x))
         speeds.append((v_y, v_x)) 
-    bathroom_map = simulate_bathroom_robots(dimensions, positions, speeds, 10000)
+    bathroom_map = simulate_bathroom_robots(dimensions, positions, speeds, 100)
     safety_score = compute_safety_score(bathroom_map, dimensions)
     return safety_score
 
