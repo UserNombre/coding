@@ -48,10 +48,13 @@ def main():
 
     aoc.debug = args.debug
     if args.command == "run":
+        aoc.mode = "run"
         run(args)
     elif args.command == "check":
+        aoc.mode = "check"
         check(args)
     elif args.command == "shell":
+        aoc.mode = "shell"
         shell(locals())
     else:
         raise UserWarning(f"command {args.command} does not exist")
