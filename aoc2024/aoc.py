@@ -9,12 +9,16 @@ def run(module):
         input_path = Path(module.__file__).with_suffix(".txt")
     string_input = input_path.read_text()
     result = module.solve(string_input)
+    if module.debug:
+        print()
     print(result)
     if module.interact:
         shell(module, locals())
 
 def check(module):
     result = module.solve(module.sample_input)
+    if module.debug:
+        print()
     if result == module.sample_result:
         print("Check succeeded")
         print(f"{result} == {module.sample_result}")
@@ -39,6 +43,7 @@ def main(command, module_path, input_path=None, debug=False, interact=False):
 
     module_name = str(Path(module_path).with_suffix(""))
     module = importlib.import_module(module_name)
+    module.helpers = importlib.import_module("helpers")
     module.input_path = input_path
     module.debug = debug
     module.interact = interact
