@@ -73,6 +73,8 @@ def cli_main():
         print(e)
     except UserWarning as e:
         print(f"Usage error: {e}")
+    except AssertionError as e:
+        print(f"Assertion error: {e}")
     except Exception as e:
         import traceback
         print(traceback.format_exc())

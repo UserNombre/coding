@@ -33,8 +33,12 @@ def execute_program(registers, program):
     return output
 
 def execute_instruction(registers, program, output):
-    opcode = program[registers[7]]
-    operand = program[registers[7]+1]
+    try:
+        opcode = program[registers[7]]
+        operand = program[registers[7]+1]
+    except IndexError:
+        raise AssertionError(f"instruction {registers[7], registers[7]+1} out of program range (0, {len(program)-1}) ")
+
     try:
         if opcode == 0: # adv
             registers[4] = registers[4]//(2**registers[operand])
@@ -55,9 +59,9 @@ def execute_instruction(registers, program, output):
         elif opcode == 7: # cdv
             registers[6] = registers[4]//(2**registers[operand])
         else:
-            raise UserWarning(f"Invalid instruction opcode '{opcode}'")
+            raise AssertionError(f"invalid instruction opcode '{opcode}'")
     except IndexError:
-        raise UserWarning(f"Invalid register number '{operand}'")
+        raise AssertionError(f"invalid register number '{operand}'")
     registers[7] += 2
 
 def print_debug_info(registers, program, output):

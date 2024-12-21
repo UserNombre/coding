@@ -58,7 +58,7 @@ def explore_lab_map(lab_map):
             visited_map[next_position[0]][next_position[1]] = ord("o")
             guard_position = next_position
         else:
-            raise UserWarning(f"Invalid cell value {cell}")
+            raise AssertionError(f"invalid cell value {cell}")
         next_position = tuple(map(add, guard_position, guard_direction))
     return visited_map, has_loop
 
