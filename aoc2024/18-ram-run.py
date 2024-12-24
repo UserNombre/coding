@@ -1,5 +1,6 @@
 import re
 import numpy as np
+from bisect import bisect
 
 sample_input = """
 5,4
@@ -29,7 +30,7 @@ sample_input = """
 2,0
 """
 
-sample_result = (22,)
+sample_result = (22, "6,1")
 
 def solve(input_string):
     if mode == "check":
@@ -40,32 +41,37 @@ def solve(input_string):
         fallen_bytes = 1024
 
     maze = np.full(dimensions, ord("."))
-    steps_map = np.full(dimensions, float("inf"))
     corrupted_positions = [(int(i), int(j)) for i, j in re.findall(r"(\d+),(\d+)", input_string)]
-    for position in corrupted_positions[:fallen_bytes]:
+    exit_distance = compute_exit_distance(maze, corrupted_positions[:fallen_bytes])
+    unreachable_index = bisect(range(len(corrupted_positions)), 1e9-1,
+                               key=lambda i: compute_exit_distance(maze, corrupted_positions[:i]))-1
+    unreachable_coords = ",".join(str(x) for x in corrupted_positions[unreachable_index])
+    return exit_distance, unreachable_coords
+
+def compute_exit_distance(maze, corrupted_positions):
+    maze = maze.copy()
+    iterations = len(corrupted_positions)
+    for position in corrupted_positions:
         maze[position] = ord("#")
 
-    end_position = np.array(maze.shape) - (1, 1)
-    compute_maze_steps(maze, end_position, np.array([0, 0]), 0, steps_map)
-    min_steps = int(steps_map[*end_position])
-    return min_steps,
+    exit_distance = 1e9
+    exit_position = np.array(maze.shape) - (1, 1)
+    pending = [(0, np.array([0, 0]))]
+    while pending:
+        distance, position = pending.pop(0)
+        maze[*position] = ord("o")
+        if (position == exit_position).all():
+            return distance
+        for direction in helpers.directions:
+            next_position = position + direction
+            if ((((0, 0) <= next_position) & (next_position < maze.shape)).all() and
+                maze[*next_position] not in [ord("#"), ord("o"), ord("x")]):
+                maze[*next_position] = ord("x")
+                pending.append((distance+1, next_position))
+        if debug:
+            print_debug_info(maze, position, iterations)
+    return exit_distance
 
-def compute_maze_steps(maze, end_position, position, steps, steps_map):
-    if (maze[*position] == ord("#") or
-        not steps < steps_map[*end_position] or
-        not steps < steps_map[*position]):
-        return
-
-    steps_map[*position] = steps
-    maze[*position] = ord("o")
-    if debug:
-        print_debug_info(maze, position, steps, steps_map[*end_position])
-    for direction in helpers.directions:
-        next_position = position + direction
-        if (((0, 0) <= next_position) & (next_position < maze.shape)).all():
-            compute_maze_steps(maze, end_position, next_position, steps+1, steps_map)
-    maze[*position] = ord(".")
-
-def print_debug_info(maze, position, steps, min_steps):
-    header = f"POS: {tuple(position)}, STEP: {steps}, MIN_STEPS: {min_steps}"
+def print_debug_info(maze, position, iterations):
+    header = f"POS: {tuple(position)} ITER: {iterations}"
     helpers.print_2d_debug_info(header, maze, position, 0.1)
