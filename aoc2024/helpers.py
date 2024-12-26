@@ -3,6 +3,10 @@ import sys
 import time
 
 directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+cw_direction = {direction: directions[(i+1)%4] for i, direction in enumerate(directions)}
+ccw_direction = {direction: directions[(i-1)%4] for i, direction in enumerate(directions)}
+cell_to_direction = {ord("^"): (-1, 0), ord(">"): (0, 1), ord("v"): (1, 0), ord("<"): (0, -1)}
+direction_to_cell = {v: k for k, v in cell_to_direction.items()}
 
 def print_2d_debug_info(header, array, center, seconds):
     sys.stdout.write("\033[2J\033[H")
